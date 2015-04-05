@@ -66,10 +66,19 @@ jQuery.validator.addMethod("checkpass", function(value, element) {
 		<table style="width: 285px; height: 200px;">
 			<tbody>
 				<tr>
+					<td class="l_right">id：</td>
+					<td class="l_left">
+					<input id='id' name="id" type="hidden" value="${city.id}">
+					${city.id}</td>
+				</tr>
+				<tr>
 					<td class="l_right">城市名称：</td>
 					<td class="l_left">
-					<input id='id' name="id" type="hidden" value="${city.cityId}">
-					${city.cityName}</td>
+					<div class="lanyuan_input">
+					<input id='cityName'
+						name="cityName" type="text" class="isNum" value="">
+						</div>
+					</td>
 				</tr>
 				<tr>
 					<td colspan="2">

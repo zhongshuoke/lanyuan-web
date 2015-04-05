@@ -47,16 +47,15 @@
 		});
 		$("#editView").click("click", function() {//绑定查询按扭
 			var cbox=grid.getSelectedCheckbox();
-		    alert(cbox);
 			if (cbox.length > 1||cbox=="") {
-				parent.$.ligerDialog.alert("至少选中一个");
+				parent.$.ligerDialog.alert("只能选中一个");
 				return;
 			}
 			dialog = parent.$.ligerDialog.open({
 				width : 300,
 				height : 310,
 				url : rootPath + '/background/city/editUI.html?cityId='+cbox,
-				title : "修改账号",
+				title : "修改城市信息",
 				isHidden : false
 			});
 		});
@@ -76,7 +75,6 @@
 		});
 		$("#deleteView").click("click", function() {//绑定查询按扭
 			var cbox=grid.getSelectedCheckbox();
-		    alert(cbox);
 			if (cbox=="") {
 				parent.$.ligerDialog.alert("请选择删除项！！");
 				return;
