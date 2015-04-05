@@ -19,8 +19,10 @@ import org.springframework.web.util.HtmlUtils;
 import com.lanyuan.controller.common.BaseCommonController;
 import com.lanyuan.entity.Advertisement;
 import com.lanyuan.entity.TypePic;
+import com.lanyuan.entity.WxAccType;
 import com.lanyuan.entity.WxArticle;
 import com.lanyuan.service.AdvertisementService;
+import com.lanyuan.service.WxAccTypeService;
 import com.lanyuan.service.WxArticleService;
 
 @Controller
@@ -31,6 +33,8 @@ public class WxCommArticleListController extends BaseCommonController{
 	private WxArticleService wxArticleService;
 	@Inject
 	private AdvertisementService advertisementService;
+	@Inject
+	private WxAccTypeService wxAccTypeService;
 	
 	/**
 	 * 返回文章列表
@@ -139,6 +143,22 @@ public class WxCommArticleListController extends BaseCommonController{
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("typePicList",piclist);
+		map.put("errorCode",1);
+		map.put("message","");
+		return map;
+	}
+	
+	/**
+	 * 返回当前栏目
+	 * @param class_id
+	 * @param limit
+	 */
+	@RequestMapping("/getClassList")
+	@ResponseBody
+	public Map<String, Object> getClassList() {
+		List<WxAccType> wxAccTypeList = wxAccTypeService.queryAll(null);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("wxAccTypeList",wxAccTypeList);
 		map.put("errorCode",1);
 		map.put("message","");
 		return map;
