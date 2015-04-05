@@ -18,16 +18,22 @@ import org.springframework.web.util.HtmlUtils;
 
 import com.lanyuan.controller.common.BaseCommonController;
 import com.lanyuan.entity.Advertisement;
+import com.lanyuan.entity.City;
 import com.lanyuan.entity.TypePic;
 import com.lanyuan.entity.WxAccType;
 import com.lanyuan.entity.WxArticle;
 import com.lanyuan.service.AdvertisementService;
+import com.lanyuan.service.CityService;
 import com.lanyuan.service.WxAccTypeService;
 import com.lanyuan.service.WxArticleService;
+import com.lanyuan.util.MD5;
 
 @Controller
 @RequestMapping("/querydata")
 public class WxCommArticleListController extends BaseCommonController{
+	
+	//token，WxUser.id
+	public static final Map<String, Integer> LOGIN_MAP = new HashMap<String, Integer>();
     
 	@Inject
 	private WxArticleService wxArticleService;
@@ -35,6 +41,9 @@ public class WxCommArticleListController extends BaseCommonController{
 	private AdvertisementService advertisementService;
 	@Inject
 	private WxAccTypeService wxAccTypeService;
+	@Inject
+	private CityService cityService;
+	
 	
 	/**
 	 * 返回文章列表
@@ -151,8 +160,6 @@ public class WxCommArticleListController extends BaseCommonController{
 	
 	/**
 	 * 返回当前栏目
-	 * @param class_id
-	 * @param limit
 	 */
 	@RequestMapping("/getClassList")
 	@ResponseBody
@@ -160,6 +167,29 @@ public class WxCommArticleListController extends BaseCommonController{
 		List<WxAccType> wxAccTypeList = wxAccTypeService.queryAll(null);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("wxAccTypeList",wxAccTypeList);
+		map.put("errorCode",1);
+		map.put("message","");
+		return map;
+	}
+	
+	/**
+	 * 返回城市列表
+	 */
+	@RequestMapping("/getCityList")
+	@ResponseBody
+	public Map<String, Object> getCityList(String page, String limit) {
+		int i_page = 1;
+		int i_limit = 5;
+		if(!StringUtils.isBlank(page)) {
+			i_page = Integer.valueOf(page);
+		}
+		if(!StringUtils.isBlank(limit)) {
+			i_limit = Integer.valueOf(limit);
+		}
+		int i_offset = (i_page-1)*i_limit;
+		List<City> wxCityList = cityService.queryCityList(i_offset, i_limit);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("wxCityList",wxCityList);
 		map.put("errorCode",1);
 		map.put("message","");
 		return map;
@@ -304,4 +334,232 @@ public class WxCommArticleListController extends BaseCommonController{
 		return map;
 	}
 	
+	/**
+	 * 文章阅读数加一
+	 * @param wxArticleId 文章id
+	 */
+	@RequestMapping("/increaseReadNum")
+	@ResponseBody
+	public Map<String, Object> increaseReadNum(String wxArticleId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(StringUtils.isBlank(wxArticleId)) {
+			map.put("errorCode",0);
+			map.put("message","文章不能为空");
+			return map;
+		}
+		//TODO 保存数据库
+		map.put("errorCode",1);
+		map.put("message","阅读数加一成功");
+		return map;
+	}
+	
+	/**
+	 * 用户注册
+	 * @param phone 手机号
+	 * @param username 用户名
+	 * @param password 密码
+	 * @param verifyCode 手机验证码
+	 */
+	@RequestMapping("/registerUser")
+	@ResponseBody
+	public Map<String, Object> registerUser(String phone, String username, String password, String verifyCode) {
+//		Map<String, Object> map = new HashMap<String, Object>();
+//		WxArticle wa = wxArticleService.getById(wxArticleId);
+//		WxArticle wxArticle = new WxArticle();
+//		wxArticle.setWxAccountNo(wa.getWxAccountNo());	//TODO
+//		List<WxArticle> moreRecommendArticleList = wxArticleService.queryAll(wxArticle);
+//		if(moreRecommendArticleList.size()>3) {//删除自己，以后再说 TODO
+//			map.put("moreRecommendArticleList",moreRecommendArticleList.subList(0, 3));
+//		}else {
+//			map.put("moreRecommendArticleList",moreRecommendArticleList);
+//		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(StringUtils.isBlank(phone)) {
+			map.put("errorCode",0);
+			map.put("message","手机号不能为空");
+			return map;
+		}
+		if(StringUtils.isBlank(username)) {
+			map.put("errorCode",0);
+			map.put("message","用户名不能为空");
+			return map;
+		}
+		if(StringUtils.isBlank(password)) {
+			map.put("errorCode",0);
+			map.put("message","密码不能为空");
+			return map;
+		}
+//		if(StringUtils.isBlank(verifyCode)) {
+//			map.put("errorCode",0);
+//			map.put("message","验证码错误");
+//			return map;
+//		}
+		String token = MD5.md5(username+password+new Date().getTime());
+		map.put("token", token);
+		map.put("errorCode",1);
+		map.put("message","注册成功");
+		LOGIN_MAP.put(token, (int)(Math.random() * 10000));	//用户id写sql查 TODO
+		return map;
+	}
+	
+	/**
+	 * 用户登录
+	 * @param phone 手机号
+	 * @param username 用户名
+	 * @param password 密码
+	 */
+	@RequestMapping("/login")
+	@ResponseBody
+	public Map<String, Object> login(String phone, String username, String password) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(StringUtils.isBlank(phone) && StringUtils.isBlank(username)) {//如果输入的是phone要转换成username，统一做MD5的token
+			map.put("errorCode",0);
+			map.put("message","手机号和用户名不能都为空");
+			return map;
+		}
+		if(StringUtils.isBlank(password)) {
+			map.put("errorCode",0);
+			map.put("message","密码不能为空");
+			return map;
+		}
+		String token = MD5.md5(username+password+new Date().getTime());
+		map.put("token", token);
+		map.put("errorCode",1);
+		map.put("message","登陆成功");
+		LOGIN_MAP.put(token, (int)(Math.random() * 10000));	//用户id写sql查 TODO
+		return map;
+	}
+	
+	/**
+	 * 文章投稿
+	 * @param content 投稿内容
+	 * @param token 登陆token
+	 */
+	@RequestMapping("/articleApply")
+	@ResponseBody
+	public Map<String, Object> articleApply(String content, String token) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(StringUtils.isBlank(content)) {
+			map.put("errorCode",0);
+			map.put("message","投稿内容不能为空");
+			return map;
+		}
+		if(!StringUtils.isBlank(token)) {
+			if(LOGIN_MAP.containsKey(token)) {
+				//TODO 保存数据库
+				map.put("errorCode",1);
+				map.put("message","投稿成功");
+				return map;
+			}else {
+				map.put("errorCode",0);
+				map.put("message","token已失效，请重新登录");
+				return map;
+			}
+		}else {
+			//TODO 保存数据库
+			map.put("errorCode",1);
+			map.put("message","投稿成功");
+			return map;
+		}
+	}
+	
+	/**
+	 * 栏目订阅
+	 * @param class_id 栏目id
+	 * @param token 登陆token
+	 */
+	@RequestMapping("/subscribeClass")
+	@ResponseBody
+	public Map<String, Object> subscribeClass(String class_id, String token) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(StringUtils.isBlank(class_id)) {
+			map.put("errorCode",0);
+			map.put("message","请选择栏目");
+			return map;
+		}
+		if(!StringUtils.isBlank(token)) {
+			if(LOGIN_MAP.containsKey(token)) {
+				//TODO 保存数据库
+				map.put("errorCode",1);
+				map.put("message","订阅成功");
+				return map;
+			}else {
+				map.put("errorCode",0);
+				map.put("message","token已失效，请重新登录");
+				return map;
+			}
+		}else {
+			//TODO 保存数据库
+			map.put("errorCode",1);
+			map.put("message","订阅成功");
+			return map;
+		}
+	}
+	
+	/**
+	 * 关键字订阅
+	 * @param keyword 订阅的关键字
+	 * @param token 登陆token
+	 */
+	@RequestMapping("/subscribeKeyword")
+	@ResponseBody
+	public Map<String, Object> subscribeKeyword(String keyword, String token) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(StringUtils.isBlank(keyword)) {
+			map.put("errorCode",0);
+			map.put("message","关键字不能为空");
+			return map;
+		}
+		if(!StringUtils.isBlank(token)) {
+			if(LOGIN_MAP.containsKey(token)) {
+				//TODO 保存数据库
+				map.put("errorCode",1);
+				map.put("message","订阅成功");
+				return map;
+			}else {
+				map.put("errorCode",0);
+				map.put("message","token已失效，请重新登录");
+				return map;
+			}
+		}else {
+			//TODO 保存数据库
+			map.put("errorCode",1);
+			map.put("message","订阅成功");
+			return map;
+		}
+	}
+	
+	/**
+	 * 给文章点赞
+	 * @param wxArticleId 文章id
+	 * @param token 登陆token
+	 */
+	@RequestMapping("/likeButton")
+	@ResponseBody
+	public Map<String, Object> likeButton(String wxArticleId, String token) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(StringUtils.isBlank(wxArticleId)) {
+			map.put("errorCode",0);
+			map.put("message","文章不能为空");
+			return map;
+		}
+		if(!StringUtils.isBlank(token)) {
+			if(LOGIN_MAP.containsKey(token)) {
+				//TODO 保存数据库
+				map.put("errorCode",1);
+				map.put("message","点赞成功");
+				return map;
+			}else {
+				map.put("errorCode",0);
+				map.put("message","token已失效，请重新登录");
+				return map;
+			}
+		}else {
+			//TODO 保存数据库
+			map.put("errorCode",1);
+			map.put("message","点赞成功");
+			return map;
+		}
+	}
+
 }
