@@ -139,6 +139,7 @@ public class WxCommArticleListController extends BaseCommonController{
 			tp.setWxAccTypeId(index+1L);
 			tp.setWxArticleId(index+1L);
 			tp.setTypePicUrl("y:/localpic/typepic/1.jpg");
+			tp.setWxArticTitle("wxArticTitle_"+(index+1));
 			piclist.add(tp);
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -224,6 +225,29 @@ public class WxCommArticleListController extends BaseCommonController{
 			map.put("relatedArticleList",wxArticleList.subList(0, 3));
 		}else {
 			map.put("relatedArticleList",wxArticleList);
+		}
+		map.put("errorCode",1);
+		map.put("message","");
+		return map;
+	}
+	
+	/**
+	 * 返回文章wxArticleId的相关文章列表，最多3篇。
+	 * 相关文章：同一栏目下的最新文章   TODO
+	 * @param wxArticleId 文章id
+	 */
+	@RequestMapping("/queryMoreRecommendArticleList")
+	@ResponseBody
+	public Map<String, Object> queryMoreRecommendArticleList(String wxArticleId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		WxArticle wa = wxArticleService.getById(wxArticleId);
+		WxArticle wxArticle = new WxArticle();
+		wxArticle.setWxAccountNo(wa.getWxAccountNo());	//TODO
+		List<WxArticle> moreRecommendArticleList = wxArticleService.queryAll(wxArticle);
+		if(moreRecommendArticleList.size()>3) {//删除自己，以后再说 TODO
+			map.put("moreRecommendArticleList",moreRecommendArticleList.subList(0, 3));
+		}else {
+			map.put("moreRecommendArticleList",moreRecommendArticleList);
 		}
 		map.put("errorCode",1);
 		map.put("message","");
