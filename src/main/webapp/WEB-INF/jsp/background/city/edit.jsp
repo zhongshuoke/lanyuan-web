@@ -20,7 +20,7 @@ jQuery.validator.addMethod("checkpass", function(value, element) {
 						if (data.flag == "true") {
 							$.ligerDialog.success('提交成功!', '提示', function() {
 								//这个是调用同一个页面趾两个iframe里的js方法
-								//wx_account是iframe的id
+								//wx_city是iframe的id
 								parent.wx_city.loadGird();
 								closeWin();
 							});
@@ -49,9 +49,6 @@ jQuery.validator.addMethod("checkpass", function(value, element) {
 				$(".l_err").css('display','none');
 			}
 		});
-	});
-	$(function() {
-		$("input:radio[value='${wxAccount.state}']").attr('checked','true');
 	});
 	function saveWin() {
 		$("#form").submit();

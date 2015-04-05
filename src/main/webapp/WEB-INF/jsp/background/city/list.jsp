@@ -14,9 +14,10 @@
 		grid = window.lanyuan.ui.lyGrid({
 					id : 'paging',
 					l_column : [ {
-						colkey : "cityId",
-						name : "城市ID"
-					}, {
+						colkey : "id",
+						name : "id",
+						width : "50px"
+					},  {
 						colkey : "cityName",
 						name : "城市名称"
 					} ],
@@ -40,26 +41,42 @@
 				width : 300,
 				height : 310,
 				url : rootPath + '/background/city/addUI.html',
-				title : "增加账号",
+				title : "增加类别",
 				isHidden:false   //关闭对话框时是否只是隐藏，还是销毁对话框
 			});
 		});
 		$("#editView").click("click", function() {//绑定查询按扭
 			var cbox=grid.getSelectedCheckbox();
+		    alert(cbox);
 			if (cbox.length > 1||cbox=="") {
-				parent.$.ligerDialog.alert("只能选中一个");
+				parent.$.ligerDialog.alert("至少选中一个");
 				return;
 			}
 			dialog = parent.$.ligerDialog.open({
 				width : 300,
 				height : 310,
 				url : rootPath + '/background/city/editUI.html?cityId='+cbox,
-				title : "修改城市信息",
+				title : "修改账号",
+				isHidden : false
+			});
+		});
+		$("#perrole").click("click", function() {//绑定查询按扭
+			var cbox=grid.selectRow();
+			if (cbox.id == undefined || cbox.id=="") {
+				parent.$.ligerDialog.alert("请选择一条数据!");
+				return;
+			}
+			dialog = parent.$.ligerDialog.open({
+				width : 500,
+				height : 410,
+				url : rootPath + '/background/wxacctype/accRole.html?id='+cbox.id+'&accountName='+encodeURI(encodeURI(cbox.accountName))+'&roleName='+encodeURI(encodeURI(cbox.roleName)),
+				title : "分配角色",
 				isHidden : false
 			});
 		});
 		$("#deleteView").click("click", function() {//绑定查询按扭
 			var cbox=grid.getSelectedCheckbox();
+		    alert(cbox);
 			if (cbox=="") {
 				parent.$.ligerDialog.alert("请选择删除项！！");
 				return;
@@ -85,30 +102,7 @@
 				}
 			});
 		});
-
-        /*
-	        $("#stopCapture").click("click", function() {
-	   					$.ajax({
-						    type: "post", //使用get方法访问后台
-						    dataType: "json", //json格式的数据
-						    url: rootPath + '/background/wxarticle/savehtml.html', //要发送的请求地址
-						    data: {ids:cbox.join(","),
-						      eventtype:"stopcapture"
-						          }, //要发送的数据
-						    success: function(data){
-						    	if (data.flag == "true") {
-						    		parent.$.ligerDialog.success('停止抓取成功!', '提示', function() {
-						    			loadGird();//重新加载表格数据
-									});
-								}else{
-									parent.$.ligerDialog.warn("停止抓取失败！！");
-								}
-							}
-						});
-		     });*/
-		
 	});
-	
 	function loadGird(){
 		grid.loadData();
 	}
@@ -118,7 +112,7 @@
 	<div class="divBody">
 		<div class="search">
 			<form name="fenye" id="fenye">
-				城市名称：<input type="text" name="cityName" value="${param.name}"
+				名称：<input type="text" name="cityName" value="${param.name}"
 					style="height: 20px" /> <a class="btn btn-primary"
 					href="javascript:void(0)" id="seach"> 查询
 				</a>
