@@ -430,6 +430,38 @@ public class WxCommArticleListController extends BaseCommonController{
 		return map;
 	}
 	
+	
+	/**
+	 * 用户登录
+	 * @param phone 手机号
+	 * @param username 用户名
+	 * @param verifyCode 验证码
+	 */
+	@RequestMapping("/login")
+	@ResponseBody
+	public Map<String, Object> findPassword(String phone, String username, String verifyCode) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(StringUtils.isBlank(phone) && StringUtils.isBlank(username)) {//如果输入的是phone要转换成username，统一做MD5的token
+			map.put("errorCode",0);
+			map.put("message","手机号和用户名不能都为空");
+			return map;
+		}
+		if(StringUtils.isBlank(verifyCode)) {
+			map.put("errorCode",0);
+			map.put("message","验证码不能为空");
+			return map;
+		}
+		//
+		if(verifyCode.equals(verifyCode)) {	//TODO 数据库数据
+			
+		}
+		String password = "testPWD";
+		map.put("password", password);
+		map.put("errorCode",1);
+		map.put("message","获取密码成功，请重新登录！");
+		return map;
+	}
+	
 	/**
 	 * 文章投稿
 	 * @param content 投稿内容
@@ -558,6 +590,40 @@ public class WxCommArticleListController extends BaseCommonController{
 			//TODO 保存数据库
 			map.put("errorCode",1);
 			map.put("message","点赞成功");
+			return map;
+		}
+	}
+	
+	
+	/**
+	 * 给文章点赞
+	 * @param wxArticleId 文章id
+	 * @param token 登陆token
+	 */
+	@RequestMapping("/collectionArticle")
+	@ResponseBody
+	public Map<String, Object> collectionArticle(String wxArticleId, String token) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(StringUtils.isBlank(wxArticleId)) {
+			map.put("errorCode",0);
+			map.put("message","文章不能为空");
+			return map;
+		}
+		if(!StringUtils.isBlank(token)) {
+			if(LOGIN_MAP.containsKey(token)) {
+				//TODO 保存数据库
+				map.put("errorCode",1);
+				map.put("message","收藏成功");
+				return map;
+			}else {
+				map.put("errorCode",0);
+				map.put("message","token已失效，请重新登录");
+				return map;
+			}
+		}else {
+			//TODO 保存数据库
+			map.put("errorCode",1);
+			map.put("message","收藏成功");
 			return map;
 		}
 	}
