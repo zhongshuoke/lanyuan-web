@@ -19,7 +19,7 @@ $(document).ready(function(){
     $(function() {
         $('#file_upload').uploadify({
             'swf'      : '${ctx}/uploadify/uploadify.swf',
-            'uploader' : '/background/wxrecommarticle/saveOrUpdatePic.html?recommarticleId='+$("#articleid").val(),
+            'uploader' : '${ctx}/background/wxrecommarticle/saveOrUpdatePic.html?recommarticleId='+$("#articleid").val(),
             'height': 25,
             'whith' :120,
             'auto'  : false,

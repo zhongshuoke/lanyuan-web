@@ -32,6 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -147,9 +148,9 @@ public class WxRecommArticleController extends BaseController{
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("/saveOrUpdatePic")
+	@RequestMapping(value="saveOrUpdatePic", method=RequestMethod.POST)
 	@ResponseBody
-	public Object saveOrUpdatePic(HttpServletRequest request, PrintWriter out) throws Exception{
+	public Object saveOrUpdatePic(HttpServletRequest request) throws Exception{
 		 Integer userID = 0;
 	        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 	        MultipartFile multipartFile = multipartRequest.getFile("Filedata");
@@ -245,6 +246,8 @@ public class WxRecommArticleController extends BaseController{
         // 图片文件名: 时间戳 + 随机串 + 高宽
         String fileName = StringUtils.join(timeStr, randomKey, '_', height, '_', width, '.', suffix);
         UploadFilePathVO uploadFile = new UploadFilePathVO();
+        uploadFile.setImgHeight(height);
+        uploadFile.setImgWidth(width);
         uploadFile.setRelativePath(StringUtils.join(relativePath, fileName));
         uploadFile.setRealPath(StringUtils.join(realPath, fileName));
         return uploadFile;

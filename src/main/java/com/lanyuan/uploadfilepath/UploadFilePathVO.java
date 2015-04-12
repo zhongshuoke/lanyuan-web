@@ -2,8 +2,8 @@ package com.lanyuan.uploadfilepath;
 
 public class UploadFilePathVO {
 
-	public String realPath;
-    public String relativePath;
+	public String realPath;	//绝对路径
+    public String relativePath;	//相对路径
     private int imgHeight; // 上传图片的高
     private int imgWidth; // 宽 
 
