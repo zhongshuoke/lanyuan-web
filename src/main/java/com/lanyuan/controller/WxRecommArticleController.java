@@ -150,7 +150,7 @@ public class WxRecommArticleController extends BaseController{
 	 */
 	@RequestMapping(value="saveOrUpdatePic", method=RequestMethod.POST)
 	@ResponseBody
-	public Object saveOrUpdatePic(HttpServletRequest request) throws Exception{
+	public Object saveOrUpdatePic(HttpServletRequest request,String recommarticleId) throws Exception{
 		 Integer userID = 0;
 	        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 	        MultipartFile multipartFile = multipartRequest.getFile("Filedata");
@@ -181,6 +181,10 @@ public class WxRecommArticleController extends BaseController{
 	        // fileName = StringUtil.join(fileName, suffix);
 	        UploadFilePathVO uploadFile = this.initFileUpload(userID, "test", suffix, width, height);
 	        File file = new File(uploadFile.getRealPath());
+	        System.out.println("上传文件的路径为： "+ uploadFile.getRealPath());
+	        WxRecommendToday wxRecommendToday = wxRecommendTodayService.getById(recommarticleId);
+	        wxRecommendToday.setPicUrl(uploadFile.getRealPath());
+	        wxRecommendTodayService.update(wxRecommendToday);
 	        multipartFile.transferTo(file);
 
 	    return uploadFile;
