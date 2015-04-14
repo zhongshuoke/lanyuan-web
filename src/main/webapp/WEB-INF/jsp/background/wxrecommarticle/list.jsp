@@ -28,7 +28,7 @@
 					}, {
 						colkey : "str_abstract",
 						name : "摘要",
-						width:"300px"
+						width:"200px"
 					}, {						
 						colkey : "publishTime",
 						name : "发布时间",
@@ -37,7 +37,11 @@
 						colkey : "captureTime",
 						name : "抓取时间",
 						width : "300px"
-					} ],
+					}, {						
+						colkey : "picUrl",
+						name : "图片路径",
+						width : "300px"
+					}],
 					jsonUrl : '${pageContext.request.contextPath}/background/wxrecommarticle/query.html',
 					checkbox : true
 				});
