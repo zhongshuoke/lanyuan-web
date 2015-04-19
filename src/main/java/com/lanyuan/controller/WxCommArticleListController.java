@@ -19,13 +19,16 @@ import org.springframework.web.util.HtmlUtils;
 import com.lanyuan.controller.common.BaseCommonController;
 import com.lanyuan.entity.Advertisement;
 import com.lanyuan.entity.City;
+import com.lanyuan.entity.OperateTypeEnum;
 import com.lanyuan.entity.TypePic;
 import com.lanyuan.entity.WxAccType;
 import com.lanyuan.entity.WxArticle;
+import com.lanyuan.entity.WxUserOperation;
 import com.lanyuan.service.AdvertisementService;
 import com.lanyuan.service.CityService;
 import com.lanyuan.service.WxAccTypeService;
 import com.lanyuan.service.WxArticleService;
+import com.lanyuan.service.WxUserOperationService;
 import com.lanyuan.util.MD5;
 
 @Controller
@@ -43,6 +46,8 @@ public class WxCommArticleListController extends BaseCommonController{
 	private WxAccTypeService wxAccTypeService;
 	@Inject
 	private CityService cityService;
+	@Inject
+	private WxUserOperationService wxUserOperationService;
 	
 	
 	/**
@@ -342,12 +347,28 @@ public class WxCommArticleListController extends BaseCommonController{
 	@ResponseBody
 	public Map<String, Object> increaseReadNum(String wxArticleId) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		WxArticle wxArticle = null;
 		if(StringUtils.isBlank(wxArticleId)) {
 			map.put("errorCode",0);
 			map.put("message","文章不能为空");
 			return map;
+		}else {
+			wxArticle = wxArticleService.getById(wxArticleId);
+			if(wxArticle==null) {
+				map.put("errorCode",0);
+				map.put("message","该文章不存在");
+				return map;
+			}
 		}
-		//TODO 保存数据库
+		//保存数据库
+		WxArticle update_wxArticle = new WxArticle();
+		update_wxArticle.setId(wxArticle.getId());
+		update_wxArticle.setReadNum(wxArticle.getReadNum()+1);
+		try {
+			wxArticleService.update(update_wxArticle);
+		} catch (Exception e) {
+			LOG.error(e);
+		}
 		map.put("errorCode",1);
 		map.put("message","阅读数加一成功");
 		return map;
@@ -504,14 +525,24 @@ public class WxCommArticleListController extends BaseCommonController{
 	@ResponseBody
 	public Map<String, Object> subscribeClass(String class_id, String token) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		if(StringUtils.isBlank(class_id)) {
+		int i_class_id = 0;
+		try{
+			if(StringUtils.isNotBlank(class_id)) {
+				i_class_id = Integer.valueOf(class_id);
+			}
+		}catch(Exception e) {
+			LOG.error(e);
+		}
+		if(i_class_id==0) {
 			map.put("errorCode",0);
 			map.put("message","请选择栏目");
 			return map;
 		}
 		if(!StringUtils.isBlank(token)) {
 			if(LOGIN_MAP.containsKey(token)) {
-				//TODO 保存数据库
+				//TODO 保存数据库 wxUserOperationService
+				int userId = LOGIN_MAP.get(token);
+				List<WxUserOperation> wxUserOperationList = getWxUserOperationList(0, userId, OperateTypeEnum.subscribeClass.name(), i_class_id, null);
 				map.put("errorCode",1);
 				map.put("message","订阅成功");
 				return map;
@@ -521,11 +552,34 @@ public class WxCommArticleListController extends BaseCommonController{
 				return map;
 			}
 		}else {
-			//TODO 保存数据库
-			map.put("errorCode",1);
-			map.put("message","订阅成功");
+			map.put("errorCode",0);
+			map.put("message","登陆后才能订阅");
 			return map;
 		}
+	}
+	
+	private List<WxUserOperation> getWxUserOperationList(int id, int userId, String operateType, int operateId, String description) {
+		WxUserOperation t = new WxUserOperation();
+		if(id>0) {
+			t.setId(id);
+		}
+		if(userId>0) {
+			t.setUserId(userId);	
+		}
+		if(operateId>0) {
+			t.setOperateId(operateId);
+		}
+		if(StringUtils.isNotBlank(operateType)) {
+			t.setOperateType(operateType);
+		}
+		if(StringUtils.isNotBlank(description)) {
+			t.setDescription(description);
+		}
+		List<WxUserOperation> wxUserOperationList = wxUserOperationService.queryAll(t);
+		if(wxUserOperationList==null) {
+			wxUserOperationList = new ArrayList<WxUserOperation>();
+		}
+		return wxUserOperationList;
 	}
 	
 	/**
@@ -570,14 +624,30 @@ public class WxCommArticleListController extends BaseCommonController{
 	@ResponseBody
 	public Map<String, Object> likeButton(String wxArticleId, String token) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		WxArticle wxArticle = null;
 		if(StringUtils.isBlank(wxArticleId)) {
 			map.put("errorCode",0);
 			map.put("message","文章不能为空");
 			return map;
+		}else {
+			wxArticle = wxArticleService.getById(wxArticleId);
+			if(wxArticle==null) {
+				map.put("errorCode",0);
+				map.put("message","该文章不存在");
+				return map;
+			}
 		}
 		if(!StringUtils.isBlank(token)) {
 			if(LOGIN_MAP.containsKey(token)) {
-				//TODO 保存数据库
+				//保存数据库
+				WxArticle update_wxArticle = new WxArticle();
+				update_wxArticle.setId(wxArticle.getId());
+				update_wxArticle.setGoodNum(wxArticle.getGoodNum()+1);
+				try {
+					wxArticleService.update(update_wxArticle);
+				} catch (Exception e) {
+					LOG.error(e);
+				}
 				map.put("errorCode",1);
 				map.put("message","点赞成功");
 				return map;
@@ -587,7 +657,15 @@ public class WxCommArticleListController extends BaseCommonController{
 				return map;
 			}
 		}else {
-			//TODO 保存数据库
+			//保存数据库
+			WxArticle update_wxArticle = new WxArticle();
+			update_wxArticle.setId(wxArticle.getId());
+			update_wxArticle.setGoodNum(wxArticle.getGoodNum()+1);
+			try {
+				wxArticleService.update(update_wxArticle);
+			} catch (Exception e) {
+				LOG.error(e);
+			}
 			map.put("errorCode",1);
 			map.put("message","点赞成功");
 			return map;
@@ -596,7 +674,7 @@ public class WxCommArticleListController extends BaseCommonController{
 	
 	
 	/**
-	 * 给文章点赞
+	 * 收藏文章
 	 * @param wxArticleId 文章id
 	 * @param token 登陆token
 	 */
