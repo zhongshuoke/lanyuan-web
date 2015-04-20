@@ -117,7 +117,7 @@ public class WxRecommArticleController extends BaseController{
 	}
 	
 	/**
-	 * 跑到编辑界面
+	 * 跳转到编辑界面
 	 * 
 	 * @param model
 	 * @return
@@ -128,6 +128,19 @@ public class WxRecommArticleController extends BaseController{
 		model.addAttribute("wxRecommendToday", wxRecommendToday);
 		return Common.BACKGROUND_PATH+"/wxrecommarticle/edit";
 	}
+	
+	/**
+	 * 跳转到编辑摘要界面
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("editAbstractUI")
+	public String editAbstractUI(Model model,String recommarticleId) {
+		WxRecommendToday wxRecommendToday = wxRecommendTodayService.getById(recommarticleId);
+		model.addAttribute("wxRecommendToday", wxRecommendToday);
+		return Common.BACKGROUND_PATH+"/wxrecommarticle/editabstract";
+	}	
 	
 	/**
 	 * 跳转到上传图片界面
@@ -241,7 +254,7 @@ public class WxRecommArticleController extends BaseController{
         int hashcode = Math.abs(userID.hashCode() % 256);
 
         String relativePath = StringUtils.join(imageType, "/", hashcode, "/", userID, "/", dateStr, "/");
-        String realPath = StringUtils.join("D:", "/", relativePath);
+        String realPath = StringUtils.join("", "/", relativePath);
 
         File logoSaveFile = new File(realPath);
         if (!logoSaveFile.exists()) {
@@ -396,4 +409,27 @@ public class WxRecommArticleController extends BaseController{
 		}
 		return map;
 	}
+	
+	/**
+	 * 更新类型
+	 * 
+	 * @param model
+	 * @return
+	 * @throws Exception 
+	 */
+	@ResponseBody
+	@RequestMapping("updateabstract")
+	public Map<String, Object> updateabstract(Model model, WxRecommendToday wxRecommendToday) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+	
+			//wxArticle.setPassword(Md5Tool.getMd5(wxArticle.getPassword()));
+			wxRecommendTodayService.update(wxRecommendToday);
+			map.put("flag", "true");
+		} catch (Exception e) {
+			map.put("flag", "false");
+		}
+		return map;
+	}	
+	
 }
