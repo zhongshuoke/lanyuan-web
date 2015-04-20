@@ -99,7 +99,20 @@
 				isHidden : false
 			});
 		});
-		
+		$("#editAbstractView").click("click", function() {//文章摘要编辑按钮
+			var cbox=grid.getSelectedCheckbox();
+			if (cbox.length > 1||cbox=="") {
+				parent.$.ligerDialog.alert("只能选中一个");
+				return;
+			}
+			dialog = parent.$.ligerDialog.open({
+				width : 300,
+				height : 400,
+				url : rootPath + '/background/wxrecommarticle/editAbstractUI.html?recommarticleId='+cbox,
+				title : "文章摘要编辑",
+				isHidden : false
+			});
+		});		
 		$("#perrole").click("click", function() {//绑定查询按扭
 			var cbox=grid.selectRow();
 			if (cbox.id == undefined || cbox.id=="") {
@@ -162,10 +175,11 @@
 				class="icon-zoom-add icon-white"></i> <span>查看文章</span>
 			</a><a class="btn btn-info" href="javascript:void(0)" id="editView"> <i
 				class="icon-edit icon-white"></i> 微信文字编辑
-			</a> <a class="btn btn-danger" href="javascript:void(0)" id="deleteView"> <i
+			</a><a class="btn btn-info" href="javascript:void(0)" id="editAbstractView"> <i
+				class="icon-edit icon-white"></i> 文章摘要编辑
+			</a>  <a class="btn btn-danger" href="javascript:void(0)" id="deleteView"> <i
 				class="icon-trash icon-white"></i> 删除
-			</a>
-			</a> <a class="btn btn-info" href="javascript:void(0)" id="uploadPicView"> <i
+			</a><a class="btn btn-info" href="javascript:void(0)" id="uploadPicView"> <i
 				class="icon-trash icon-white"></i> 上传图片
 			</a>
 		</div>
