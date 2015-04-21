@@ -122,6 +122,17 @@ jQuery.validator.addMethod("checkpass", function(value, element) {
 						</td>
 				</tr>
 				<tr>
+					<td class="l_right">城市：</td>
+					<td class="l_left">
+					<select name="cityId" id="cityId" style="width: 140px;">
+					<option value="0">--请选择--</option>
+					<c:forEach items="${cityList}" var="key">
+					<option value="${key.id}">${key.cityName}</option>
+					</c:forEach>
+					</select>
+					</td>
+				</tr>				
+				<tr>
 					<td class="l_right">公众号状态：</td>
 					<td class="l_left">
 					<input id='state' name="state" value="1" type="radio" checked="checked"> 启用　　

@@ -19,11 +19,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.lanyuan.entity.City;
 import com.lanyuan.entity.WxAccType;
 import com.lanyuan.entity.WxAccount;
 import com.lanyuan.entity.Resources;
 import com.lanyuan.entity.WxArticle;
 import com.lanyuan.pulgin.mybatis.plugin.PageView;
+import com.lanyuan.service.CityService;
 import com.lanyuan.service.WxAccTypeService;
 import com.lanyuan.service.WxAccountService;
 import com.lanyuan.util.Common;
@@ -45,6 +47,9 @@ public class WxAccountController extends BaseController{
 	
 	@Inject
 	private WxAccTypeService wxAccTypeService;
+	
+	@Inject
+	private CityService cityService;
 	
 	@RequestMapping("list")
 	public String list(Model model, Resources menu, String pageNow) {
@@ -100,6 +105,8 @@ public class WxAccountController extends BaseController{
 	public String addUI(Model model) {
 		List<WxAccType> wxAccTypeList = wxAccTypeService.queryAll(new WxAccType());
 		model.addAttribute("wxAccTypeList", wxAccTypeList);
+		List<City> cityList = cityService.queryAll(new City());
+		model.addAttribute("cityList", cityList);
 		return Common.BACKGROUND_PATH+"/wxaccount/add";
 	}
 	
