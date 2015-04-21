@@ -118,6 +118,33 @@
 				}
 			});
 		});
+		$("#recommView").click("click", function() {//绑定推荐按扭
+			var cbox=grid.getSelectedCheckbox();
+			if (cbox=="") {
+				parent.$.ligerDialog.alert("请选择推荐项！！");
+				return;
+			}
+			parent.$.ligerDialog.confirm('确定将这些文章推荐到今日推荐吗？', function(confirm) {
+				if (confirm) {
+					$.ajax({
+					    type: "post", //使用get方法访问后台
+					    dataType: "json", //json格式的数据
+					    async: false, //同步   不写的情况下 默认为true
+					    url: rootPath + '/background/wxarticle/recommById.html', //要访问的后台地址
+					    data: {ids:cbox.join(",")}, //要发送的数据
+					    success: function(data){
+					    	if (data.flag == "true") {
+					    		parent.$.ligerDialog.success('推荐成功!', '提示', function() {
+					    			loadGird();//重新加载表格数据
+								});
+							}else{
+								parent.$.ligerDialog.warn("推荐失败！！");
+							}
+						}
+					});
+				}
+			});
+		});
 	});
 	function loadGird(){
 		grid.loadData();
@@ -139,7 +166,10 @@
 				class="icon-zoom-add icon-white"></i> <span>查看文章</span>
 			</a><a class="btn btn-info" href="javascript:void(0)" id="editView"> <i
 				class="icon-edit icon-white"></i> 微信文字编辑
-			</a> <a class="btn btn-danger" href="javascript:void(0)" id="deleteView"> <i
+			</a><a class="btn btn-large btn-success" href="javascript:void(0)" id="recommView"> <i
+				class="icon-trash icon-white"></i> 推荐
+			</a> 
+			<a class="btn btn-danger" href="javascript:void(0)" id="deleteView"> <i
 				class="icon-trash icon-white"></i> 删除
 			</a>
 		</div>

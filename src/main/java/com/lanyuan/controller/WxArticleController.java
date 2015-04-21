@@ -195,6 +195,33 @@ public class WxArticleController extends BaseController{
 		}
 		return map;
 	}
+	
+	/**
+	 * 推荐操作
+	 * 
+	 * @param model
+	 * @param videoTypeId
+	 * @return
+	 * @throws Exception 
+	 */
+	@ResponseBody
+	@RequestMapping("recommById")
+	public Map<String, Object> recommById(Model model, String ids) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			String id[] = ids.split(",");
+			for (String string : id) {
+				if(!Common.isEmpty(string)){
+				wxArticleService.recomm(string);
+				}
+			}
+			map.put("flag", "true");
+		} catch (Exception e) {
+			map.put("flag", "false");
+		}
+		return map;
+	}	
+	
 	/**
 	 * 删除
 	 * 

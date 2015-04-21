@@ -107,7 +107,7 @@
 			}
 			dialog = parent.$.ligerDialog.open({
 				width : 300,
-				height : 400,
+				height : 280,
 				url : rootPath + '/background/wxrecommarticle/editAbstractUI.html?recommarticleId='+cbox,
 				title : "文章摘要编辑",
 				isHidden : false
@@ -179,7 +179,7 @@
 				class="icon-edit icon-white"></i> 文章摘要编辑
 			</a>  <a class="btn btn-danger" href="javascript:void(0)" id="deleteView"> <i
 				class="icon-trash icon-white"></i> 删除
-			</a><a class="btn btn-info" href="javascript:void(0)" id="uploadPicView"> <i
+			</a><a class="btn btn-large btn-success" href="javascript:void(0)" id="uploadPicView"> <i
 				class="icon-trash icon-white"></i> 上传图片
 			</a>
 		</div>
