@@ -18,20 +18,20 @@
 						name : "id",
 						width : "50px"
 					}, {
-						colkey : "wxType",
-						name : "微信公众号类别"
+						colkey : "title",
+						name : "广告标题"
 					}, {
-						colkey : "wxTypeSN",
-						name : "微信公众号类别缩写",
+						colkey : "url",
+						name : "广告地址",
 					},{
-						colkey : "createTime",
-						name : "创建时间"
+						colkey : "picurl",
+						name : "广告图片路径"
 					} , {
-						colkey : "typePicUrl",
-						name : "图片地址",
+						colkey : "createTime",
+						name : "创建时间",
 						width : "250px"
 					} ],
-					jsonUrl : '${pageContext.request.contextPath}/background/wxacctype/query.html',
+					jsonUrl : '${pageContext.request.contextPath}/background/advertisement/query.html',
 					checkbox : true
 				});
 		$("#seach").click("click", function() {//绑定查询按扭
@@ -43,28 +43,28 @@
 		$("#exportExcel").click("click", function() {//绑定查询按扭
 			var f = $('#fenye');
 			f.attr('target','_blank');
-			f.attr('action','${pageContext.request.contextPath}/background/wxacctype/exportExcel.html');
+			f.attr('action','${pageContext.request.contextPath}/background/advertisement/exportExcel.html');
 			f.submit();
 		});
 		$("#add").click("click", function() {//绑定查询按扭
 			dialog = parent.$.ligerDialog.open({
 				width : 300,
 				height : 310,
-				url : rootPath + '/background/wxacctype/addUI.html',
-				title : "增加类别",
+				url : rootPath + '/background/advertisement/addUI.html',
+				title : "增加广告",
 				isHidden:false   //关闭对话框时是否只是隐藏，还是销毁对话框
 			});
 		});
 		$("#editView").click("click", function() {//绑定查询按扭
 			var cbox=grid.getSelectedCheckbox();
 			if (cbox.length > 1||cbox=="") {
-				parent.$.ligerDialog.alert("至少选中一个");
+				parent.$.ligerDialog.alert("只能选中一个");
 				return;
 			}
 			dialog = parent.$.ligerDialog.open({
 				width : 300,
 				height : 310,
-				url : rootPath + '/background/wxacctype/editUI.html?accountId='+cbox,
+				url : rootPath + '/background/advertisement/editUI.html?Id='+cbox,
 				title : "修改账号",
 				isHidden : false
 			});
@@ -78,7 +78,7 @@
 			dialog = parent.$.ligerDialog.open({
 				width : 400,
 				height : 400,
-				url : rootPath + '/background/wxacctype/uploadPicUI.html?acctypeId='+cbox,
+				url : rootPath + '/background/advertisement/uploadPicUI.html?Id='+cbox,
 				title : "上传图片",
 				isHidden : false
 			});
@@ -109,7 +109,7 @@
 					    type: "post", //使用get方法访问后台
 					    dataType: "json", //json格式的数据
 					    async: false, //同步   不写的情况下 默认为true
-					    url: rootPath + '/background/wxacctype/deleteById.html', //要访问的后台地址
+					    url: rootPath + '/background/advertisement/deleteById.html', //要访问的后台地址
 					    data: {ids:cbox.join(",")}, //要发送的数据
 					    success: function(data){
 					    	if (data.flag == "true") {

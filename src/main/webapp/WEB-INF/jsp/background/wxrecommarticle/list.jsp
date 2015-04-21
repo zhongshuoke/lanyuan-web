@@ -92,8 +92,8 @@
 				return;
 			}
 			dialog = parent.$.ligerDialog.open({
-				width : 1300,
-				height : 1310,
+				width : 400,
+				height : 400,
 				url : rootPath + '/background/wxrecommarticle/uploadPicUI.html?recommarticleId='+cbox,
 				title : "上传图片",
 				isHidden : false

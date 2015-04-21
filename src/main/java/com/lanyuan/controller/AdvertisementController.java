@@ -25,24 +25,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.lanyuan.entity.WxAccType;
+import com.lanyuan.entity.Advertisement;
 import com.lanyuan.entity.Resources;
 import com.lanyuan.pulgin.mybatis.plugin.PageView;
-import com.lanyuan.service.WxAccTypeService;
+import com.lanyuan.service.AdvertisementService;
 import com.lanyuan.uploadfilepath.UploadFilePathVO;
 import com.lanyuan.util.Common;
 import com.lanyuan.util.POIUtils;
 import com.lanyuan.util.RandomUtil;
 
 @Controller
-@RequestMapping("/background/wxacctype/")
-public class WxAccTypeController extends BaseController{
+@RequestMapping("/background/advertisement/")
+public class AdvertisementController extends BaseController{
 	@Inject
-	private WxAccTypeService wxAccTypeService;
+	private AdvertisementService advertisementService;
 	
 	@RequestMapping("list")
 	public String list(Model model, Resources menu, String pageNow) {
-		return Common.BACKGROUND_PATH+"/wxacctype/list";
+		return Common.BACKGROUND_PATH+"/advertisement/list";
 	}
 	/**
 	 * @param model
@@ -51,14 +51,14 @@ public class WxAccTypeController extends BaseController{
 	 */
 	@ResponseBody
 	@RequestMapping("query")
-	public PageView query(WxAccType wxAccType,String pageNow,String pagesize) {
-		pageView = wxAccTypeService.query(getPageView(pageNow,pagesize), wxAccType);
+	public PageView query(Advertisement advertisement,String pageNow,String pagesize) {
+		pageView = advertisementService.query(getPageView(pageNow,pagesize), advertisement);
 		return pageView;
 	}
 	@RequestMapping("exportExcel")
-	public void exportExcel(HttpServletResponse response,WxAccType wxAccType) {
-		 List<WxAccType> acs =wxAccTypeService.queryAll(wxAccType);
-		POIUtils.exportToExcel(response, "微信公众号类别报表", acs, WxAccType.class, "账号", acs.size());
+	public void exportExcel(HttpServletResponse response,Advertisement advertisement) {
+		 List<Advertisement> acs =advertisementService.queryAll(advertisement);
+		POIUtils.exportToExcel(response, "广告信息报表", acs, Advertisement.class, "账号", acs.size());
 	}
 	/**
 	 * 保存数据
@@ -70,11 +70,11 @@ public class WxAccTypeController extends BaseController{
 	 */
 	@RequestMapping("add")
 	@ResponseBody
-	public Map<String, Object> add(WxAccType wxAccType) {
+	public Map<String, Object> add(Advertisement advertisement) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			//wxAccType.setPassword(Md5Tool.getMd5(wxAccType.getPassword()));
-			wxAccTypeService.add(wxAccType);
+			advertisementService.add(advertisement);
 			map.put("flag", "true");
 		} catch (Exception e) {
 			map.put("flag", "false");
@@ -91,7 +91,7 @@ public class WxAccTypeController extends BaseController{
 	 */
 	@RequestMapping("addUI")
 	public String addUI() {
-		return Common.BACKGROUND_PATH+"/wxacctype/add";
+		return Common.BACKGROUND_PATH+"/advertisement/add";
 	}
 	
 	/**
@@ -122,10 +122,10 @@ public class WxAccTypeController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping("editUI")
-	public String editUI(Model model,String accountId) {
-		WxAccType wxAccType = wxAccTypeService.getById(accountId);
-		model.addAttribute("wxAccType", wxAccType);
-		return Common.BACKGROUND_PATH+"/wxacctype/edit";
+	public String editUI(Model model,String Id) {
+		Advertisement advertisement = advertisementService.getById(Id);
+		model.addAttribute("advertisement", advertisement);
+		return Common.BACKGROUND_PATH+"/advertisement/edit";
 	}
 	
 	/**
@@ -135,10 +135,10 @@ public class WxAccTypeController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping("uploadPicUI")
-	public String uploadPicUI(Model model,String acctypeId) {
-		WxAccType wxAccType = wxAccTypeService.getById(acctypeId);
-		model.addAttribute("wxAccType", wxAccType);
-		return Common.BACKGROUND_PATH+"/wxacctype/uploadpic";
+	public String uploadPicUI(Model model,String Id) {
+		Advertisement advertisement = advertisementService.getById(Id);
+		model.addAttribute("advertisement", advertisement);
+		return Common.BACKGROUND_PATH+"/advertisement/uploadpic";
 	}
 	
 	/**
@@ -149,7 +149,7 @@ public class WxAccTypeController extends BaseController{
 	 */
 	@RequestMapping(value="saveOrUpdatePic", method=RequestMethod.POST)
 	@ResponseBody
-	public Object saveOrUpdatePic(HttpServletRequest request,String acctypeId) throws Exception{
+	public Object saveOrUpdatePic(HttpServletRequest request,String Id) throws Exception{
 		 Integer userID = 0;
 	        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 	        MultipartFile multipartFile = multipartRequest.getFile("Filedata");
@@ -181,9 +181,9 @@ public class WxAccTypeController extends BaseController{
 	        UploadFilePathVO uploadFile = this.initFileUpload(userID, "test", suffix, width, height);
 	        File file = new File(uploadFile.getRealPath());
 	        System.out.println("上传文件的路径为： "+ uploadFile.getRealPath());
-	        WxAccType wxAccType = wxAccTypeService.getById(acctypeId);
-	        wxAccType.setTypePicUrl(uploadFile.getRealPath());
-	        wxAccTypeService.update(wxAccType);
+	        Advertisement advertisement = advertisementService.getById(Id);
+	        advertisement.setPicurl(uploadFile.getRealPath());
+	        advertisementService.update(advertisement);
 	        multipartFile.transferTo(file);
 
 	    return uploadFile;
@@ -266,9 +266,9 @@ public class WxAccTypeController extends BaseController{
 	 */
 	@RequestMapping("isExist")
 	@ResponseBody
-	public boolean isExist(String name){
-		WxAccType wxAccType = wxAccTypeService.isExist(name);
-		if(wxAccType == null){
+	public boolean isExist(int Id){
+		Advertisement advertisement = advertisementService.isExist(Id);
+		if(advertisement == null){
 			return true;
 		}else{
 			return false;
@@ -290,7 +290,7 @@ public class WxAccTypeController extends BaseController{
 			String id[] = ids.split(",");
 			for (String string : id) {
 				if(!Common.isEmpty(string)){
-				wxAccTypeService.delete(string);
+					advertisementService.delete(string);
 				}
 			}
 			map.put("flag", "true");
@@ -315,9 +315,9 @@ public class WxAccTypeController extends BaseController{
 			String id[] = ids.split(",");
 			for (String string : id) {
 				if(!Common.isEmpty(string)){
-					WxAccType wxAccType = new WxAccType();
-					wxAccType.setId(Integer.parseInt(string));
-					wxAccTypeService.update(wxAccType);
+					Advertisement advertisement = new Advertisement();
+					advertisement.setId(Integer.parseInt(string));
+					advertisementService.update(advertisement);
 				}
 			}
 			map.put("flag", "true");
@@ -335,12 +335,12 @@ public class WxAccTypeController extends BaseController{
 	 */
 	@ResponseBody
 	@RequestMapping("update")
-	public Map<String, Object> update(Model model, WxAccType wxAccType) {
+	public Map<String, Object> update(Model model, Advertisement advertisement) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 	
 			//wxAccType.setPassword(Md5Tool.getMd5(wxAccType.getPassword()));
-			wxAccTypeService.update(wxAccType);
+			advertisementService.update(advertisement);
 			map.put("flag", "true");
 		} catch (Exception e) {
 			map.put("flag", "false");

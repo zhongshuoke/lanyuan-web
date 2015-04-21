@@ -10,7 +10,7 @@
   <script type="text/javascript" src="${ctx}/uploadify/jquery.uploadify.js"></script>
 </head>
 <body>
-<input id="articleid" type="hidden" value="${wxRecommendToday.id}">
+<input id="acctypeid" type="hidden" value="${wxAccType.id}">
 <input id="file_upload" type="file" name="file"/>
 <a href="javascript:$('#file_upload').uploadify('upload', '*')">上传文件</a> | <a href="javascript:$('#file_upload').uploadify('stop')">停止上传!</a>
 <script type="text/javascript">
@@ -19,7 +19,7 @@ $(document).ready(function(){
     $(function() {
         $('#file_upload').uploadify({
             'swf'      : '${ctx}/uploadify/uploadify.swf',
-            'uploader' : '${ctx}/background/wxrecommarticle/saveOrUpdatePic.html?recommarticleId='+$("#articleid").val(),
+            'uploader' : '${ctx}/background/wxacctype/saveOrUpdatePic.html?acctypeId='+$("#acctypeid").val(),
             'height': 25,
             'whith' :120,
             'auto'  : false,
