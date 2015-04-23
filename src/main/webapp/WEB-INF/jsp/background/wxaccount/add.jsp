@@ -39,7 +39,7 @@ jQuery.validator.addMethod("checkpass", function(value, element) {
 					type:"POST",
 					url: rootPath + '/background/account/isExist.html',
 					data:{
-						name:function(){return $("#wxAccountName").val();}
+						Id:function(){return $("#Id").val();}
 					 }
 					}
 				},
@@ -148,7 +148,7 @@ jQuery.validator.addMethod("checkpass", function(value, element) {
 									class="btn btn-primary" href="javascript:void(0)" id="closeWin"
 									onclick="closeWin()"><span>关闭</span> </a>
 							</div>
-						</td>
+					</td>
 				</tr>
 			</tbody>
 		</table>

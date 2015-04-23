@@ -21,8 +21,8 @@ jQuery.validator.addMethod("checkpass", function(value, element) {
 						if (data.flag == "true") {
 							$.ligerDialog.success('提交成功!', '提示', function() {
 								//这个是调用同一个页面趾两个iframe里的js方法
-								//wx_schedule是iframe的id
-								parent.wx_schedule.loadGird();
+								//wx_advertisement是iframe的id
+								parent.wx_advertisement.loadGird();
 								closeWin();
 							});
 							//parent.window.document.getElementById("username").focus();
@@ -33,27 +33,13 @@ jQuery.validator.addMethod("checkpass", function(value, element) {
 				});
 			},
 			rules : {
-				hour : {
-				required : true,
-				remote:{ //异步验证是否存在
-					type:"POST",
-					url: rootPath + '/background/wxschedule/isExist.html',
-					data:{
-						name:function(){return $("#hour").val();}
-					 }
-					}
-				},
-				minute : {
+				url : {
 					required : true
 				}
 			},
 			messages : {
-				hour : {
-					required : "请输入小时数",
-				    remote:"该小时数已经存在"
-				},
-				minute : {
-					required : "请输入分钟数"
+				url : {
+					required : "选择状态"
 				}
 			},
 			errorPlacement : function(error, element) {//自定义提示错误位置
@@ -74,64 +60,45 @@ jQuery.validator.addMethod("checkpass", function(value, element) {
 <body>
 <div class="divdialog">
 	<div class="l_err" style="width: 270px;"></div>
-	<form name="form" id="form" action="${ctx}/background/wxschedule/add.html" method="post">
+	<form name="form" id="form" action="${ctx}/background/advertisement/add.html" method="post">
 		<table style="width: 285px; height: 200px;">
 			<tbody>
 				<tr>
-					<td class="l_right">小时(0-23)：</td>
+					<td class="l_right">标题：</td>
 					<td class="l_left">
 					<div class="lanyuan_input">
-					<input id='hour' name="hour" class="isNum" type="text" value="">
-					</div>
+					<input id='title' name="title" class="isNum" type="text" value="">
+						</div></td>
+				</tr>
+				<tr>
+					<td class="l_right">广告链接：</td>
+					<td class="l_left">
+					<div class="lanyuan_input">
+					<input id='url'
+						name="url" type="text" class="isNum" value="">
+						</div>
 					</td>
 				</tr>
 				<tr>
-					<td class="l_right">分钟(0-59)：</td>
+					<td class="l_right">图片链接：</td>
 					<td class="l_left">
 					<div class="lanyuan_input">
-					<input id='minute'
-						name="minute" type="text" class="isNum" value="">
-					</div>
-					</td>
-				</tr>
-				<tr>
-					<td class="l_right">一周第几天：</td>
-					<td class="l_left">
-					<div class="lanyuan_input">
-					<input id='day_of_week'
-						name="day_of_week" type="text" class="isNum" value="*" readonly="true">
-					</div>
-					</td>
-				</tr>
-				<tr>
-					<td class="l_right">一月第几天：</td>
-					<td class="l_left">
-					<div class="lanyuan_input">
-					<input id='day_of_month'
-						name="day_of_month" type="text" class="isNum" value="*" readonly="true">
-					</div>
-					</td>
-				</tr>
-				<tr>
-					<td class="l_right">一年第几月：</td>
-					<td class="l_left">
-					<div class="lanyuan_input">
-					<input id='month_of_year'
-						name="month_of_year" type="text" class="isNum" value="*" readonly="true">
-					</div>
+					<input id='picurl'
+						name="picurl" type="text" class="isNum" value="">
+						</div>
 					</td>
 				</tr>
 				<tr>
 					<td colspan="2">
 						<div class="l_btn_centent">
-								<!-- saveWin_form   from是表单Ｉd-->
+								<!-- saveWin_form   from是表单Id-->
 								<a class="btn btn-primary" href="javascript:void(0)"
 									id="saveWin_form" onclick="saveWin();"><span>保存</span> </a> <a
 									class="btn btn-primary" href="javascript:void(0)" id="closeWin"
 									onclick="closeWin()"><span>关闭</span> </a>
-							</div>
-						</td>
-				</tr>
+						</div>
+					</td>
+				</tr>				
 			</tbody>
 		</table>
 	</form>

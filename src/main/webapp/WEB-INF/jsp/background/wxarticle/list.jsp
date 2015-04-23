@@ -33,6 +33,10 @@
 						colkey : "captureTime",
 						name : "抓取时间",
 						width : "300px"
+					}, {
+						colkey : "isRecommDesc",
+						name : "推荐状态",
+						width : "100px"
 					} ],
 					jsonUrl : '${pageContext.request.contextPath}/background/wxarticle/query.html',
 					checkbox : true

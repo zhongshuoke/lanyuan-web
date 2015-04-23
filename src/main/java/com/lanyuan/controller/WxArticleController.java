@@ -213,6 +213,7 @@ public class WxArticleController extends BaseController{
 			for (String string : id) {
 				if(!Common.isEmpty(string)){
 				wxArticleService.recomm(string);
+				wxArticleService.updateRecommStatus(string);
 				}
 			}
 			map.put("flag", "true");

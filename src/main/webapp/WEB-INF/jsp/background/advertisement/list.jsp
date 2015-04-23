@@ -19,13 +19,16 @@
 						width : "50px"
 					}, {
 						colkey : "title",
-						name : "广告标题"
+						name : "广告标题",
+						width : "200px"
 					}, {
 						colkey : "url",
 						name : "广告地址",
+						width : "200px"
 					},{
 						colkey : "picurl",
-						name : "广告图片路径"
+						name : "广告图片路径",
+						width : "200px"
 					} , {
 						colkey : "createTime",
 						name : "创建时间",
@@ -134,7 +137,7 @@
 	<div class="divBody">
 		<div class="search">
 			<form name="fenye" id="fenye">
-				名称：<input type="text" name="wxAccountName" value="${param.name}"
+				标题：<input type="text" name="title" value="${param.name}"
 					style="height: 20px" /> <a class="btn btn-primary"
 					href="javascript:void(0)" id="seach"> 查询
 				</a>

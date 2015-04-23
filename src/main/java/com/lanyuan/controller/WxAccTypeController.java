@@ -32,6 +32,7 @@ import com.lanyuan.service.WxAccTypeService;
 import com.lanyuan.uploadfilepath.UploadFilePathVO;
 import com.lanyuan.util.Common;
 import com.lanyuan.util.POIUtils;
+import com.lanyuan.util.PropertiesUtils;
 import com.lanyuan.util.RandomUtil;
 
 @Controller
@@ -158,12 +159,20 @@ public class WxAccTypeController extends BaseController{
 	        InputStream is = new ByteArrayInputStream(bytes);
 	        int width = 0; // 原始图片宽
 	        int height = 0; // 原始图片高
+	        String classPicWidth = PropertiesUtils.findPropertiesKey("classPicWidth");
+	        String classPicHeight = PropertiesUtils.findPropertiesKey("classPicHeight");
 	        try {
 	            BufferedImage bufimg = ImageIO.read(is);
 	            // 只有图片才获取高宽
 	            if (bufimg != null) {
 	                width = bufimg.getWidth();
 	                height = bufimg.getHeight();
+	                if ( !StringUtils.equals(classPicWidth, String.valueOf(width))|| !StringUtils.equals(classPicHeight, String.valueOf(height))) {
+	                	Map<String, Object> map = new HashMap<String, Object>();
+	                	map.put("successs", false);
+	                	map.put("errorMsg", "您上传的推荐文章图片失败,失败原因是:尺寸不正确，正确的应该是"+classPicWidth+" x "+classPicHeight);
+	                	return map;
+	                }
 	            }
 	            is.close();
 	        } catch (Exception e) {
@@ -178,7 +187,7 @@ public class WxAccTypeController extends BaseController{
 	        // 文件名转码
 	        // fileName = Base64.StringToBase64(fileName);
 	        // fileName = StringUtil.join(fileName, suffix);
-	        UploadFilePathVO uploadFile = this.initFileUpload(userID, "test", suffix, width, height);
+	        UploadFilePathVO uploadFile = this.initFileUpload(userID, "pic", suffix, width, height);
 	        File file = new File(uploadFile.getRealPath());
 	        System.out.println("上传文件的路径为： "+ uploadFile.getRealPath());
 	        WxAccType wxAccType = wxAccTypeService.getById(acctypeId);
@@ -187,43 +196,6 @@ public class WxAccTypeController extends BaseController{
 	        multipartFile.transferTo(file);
 
 	    return uploadFile;
-	}
-
-	// 接受图片，返回图片地址
-	private Object storeIOc(String picHref,HttpServletRequest request) throws Exception {
-		Integer userID = 0;
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile multipartFile = multipartRequest.getFile("Filedata");
-        /** 写文件前先读出图片原始高宽 **/
-        byte[] bytes = multipartFile.getBytes();
-        InputStream is = new ByteArrayInputStream(bytes);
-        int width = 0; // 原始图片宽
-        int height = 0; // 原始图片高
-        try {
-            BufferedImage bufimg = ImageIO.read(is);
-            // 只有图片才获取高宽
-            if (bufimg != null) {
-                width = bufimg.getWidth();
-                height = bufimg.getHeight();
-            }
-            is.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            is.close();
-            throw new Exception("uploadify上传图片读取图片高宽时发生异常!");
-        }
-
-        /** 拼成完整的文件保存路径加文件 **/
-        String originalFilename = multipartFile.getOriginalFilename(); // 文件全名
-        String suffix = StringUtils.substringAfter(originalFilename, "."); // 后缀
-        // 文件名转码
-        // fileName = Base64.StringToBase64(fileName);
-        // fileName = StringUtil.join(fileName, suffix);
-        UploadFilePathVO uploadFile = this.initFileUpload(userID, "test", suffix, width, height);
-        File file1 = new File(uploadFile.getRealPath());
-        multipartFile.transferTo(file1);
-
-        return uploadFile;
 	}
 	
 	/**
@@ -239,8 +211,9 @@ public class WxAccTypeController extends BaseController{
         String timeStr = new SimpleDateFormat("HHmmssSSS").format(date);
         int hashcode = Math.abs(userID.hashCode() % 256);
 
+        String picStorePath = PropertiesUtils.findPropertiesKey("picStorePath");
         String relativePath = StringUtils.join(imageType, "/", hashcode, "/", userID, "/", dateStr, "/");
-        String realPath = StringUtils.join("", "/", relativePath);
+        String realPath = StringUtils.join(picStorePath, "/", relativePath);
 
         File logoSaveFile = new File(realPath);
         if (!logoSaveFile.exists()) {
@@ -253,6 +226,8 @@ public class WxAccTypeController extends BaseController{
         uploadFile.setImgWidth(width);
         uploadFile.setRelativePath(StringUtils.join(relativePath, fileName));
         uploadFile.setRealPath(StringUtils.join(realPath, fileName));
+        uploadFile.setSuccess(true);
+        uploadFile.setErrorMsg("上传图片成功！");
         return uploadFile;
     }	
 	

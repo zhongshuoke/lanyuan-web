@@ -10,7 +10,7 @@
   <script type="text/javascript" src="${ctx}/uploadify/jquery.uploadify.js"></script>
 </head>
 <body>
-<input id="acctypeid" type="hidden" value="${wxAccType.id}">
+<input id="advertisementId" type="hidden" value="${advertisement.id}">
 <input id="file_upload" type="file" name="file"/>
 <a href="javascript:$('#file_upload').uploadify('upload', '*')">上传文件</a> | <a href="javascript:$('#file_upload').uploadify('stop')">停止上传!</a>
 <script type="text/javascript">
@@ -19,7 +19,7 @@ $(document).ready(function(){
     $(function() {
         $('#file_upload').uploadify({
             'swf'      : '${ctx}/uploadify/uploadify.swf',
-            'uploader' : '${ctx}/background/wxacctype/saveOrUpdatePic.html?acctypeId='+$("#acctypeid").val(),
+            'uploader' : '${ctx}/background/advertisement/saveOrUpdatePic.html?Id='+$("#advertisementId").val(),
             'height': 25,
             'whith' :120,
             'auto'  : false,
@@ -45,13 +45,13 @@ $(document).ready(function(){
                 //var imgUrl = uploadCommon.getPath(data);
                 //$("#imgUrl").val(imgUrl);// 返回的图片路径保存起来
                 //$("#thumbImg").attr("src", IMAGE_FILE_PATH + imgUrl);// 更新logo显示
-                parent.wx_type.loadGird();
+                parent.wx_advertisement.loadGird();
                 /*uploadCommon.uploadImageBtnStyle("imgUrl");
                 uploadCommon.initPreviewAfterUpload(data); // 新图片预览 */         
             },
             'onUploadError' : function(file, errorCode, errorMsg, errorString) {
                 alert('The file ' + file.name + ' could not be uploaded: ' + errorString);
-               }
+             }
 
         });
     });

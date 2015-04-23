@@ -35,9 +35,17 @@ $(document).ready(function(){
                      $("#file_upload").uploadify("settings", "formData", param);
                 },
             'onUploadSuccess' : function(file, data, response) {
-                var imgUrl = uploadCommon.getPath(data);
-                $("#imgUrl").val(imgUrl);// 返回的图片路径保存起来
-                $("#thumbImg").attr("src", IMAGE_FILE_PATH + imgUrl);// 更新logo显示
+            	var obj = eval('(' + data + ')');
+            	if (!obj.success) {
+            		alert(obj.errorMsg);
+            		return;
+            	}else{
+            		alert(obj.errorMsg);
+            	}
+                //var imgUrl = uploadCommon.getPath(data);
+                //$("#imgUrl").val(imgUrl);// 返回的图片路径保存起来
+                //$("#thumbImg").attr("src", IMAGE_FILE_PATH + imgUrl);// 更新logo显示
+                parent.wx_recommarticle.loadGird();
                 /*uploadCommon.uploadImageBtnStyle("imgUrl");
                 uploadCommon.initPreviewAfterUpload(data); // 新图片预览*/            
             },

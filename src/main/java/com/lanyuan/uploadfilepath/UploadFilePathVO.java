@@ -5,7 +5,9 @@ public class UploadFilePathVO {
 	public String realPath;	//绝对路径
     public String relativePath;	//相对路径
     private int imgHeight; // 上传图片的高
-    private int imgWidth; // 宽 
+    private int imgWidth; // 宽
+    private boolean success;//上传是否成功标志
+    private String errorMsg;//提示
 
     public String getRealPath() {
 		return realPath;
@@ -36,6 +38,18 @@ public class UploadFilePathVO {
 		return "UploadFilePathVO [realPath=" + realPath + ", relativePath="
 				+ relativePath + ", imgHeight=" + imgHeight + ", imgWidth="
 				+ imgWidth + "]";
+	}
+	public boolean isSuccess() {
+		return success;
+	}
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+	public String getErrorMsg() {
+		return errorMsg;
+	}
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
 	}
 	
 	
