@@ -68,7 +68,7 @@
 				width : 300,
 				height : 310,
 				url : rootPath + '/background/advertisement/editUI.html?Id='+cbox,
-				title : "修改账号",
+				title : "修改广告",
 				isHidden : false
 			});
 		});

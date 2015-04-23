@@ -20,7 +20,7 @@ jQuery.validator.addMethod("checkpass", function(value, element) {
 						if (data.flag == "true") {
 							$.ligerDialog.success('提交成功!', '提示', function() {
 								//这个是调用同一个页面趾两个iframe里的js方法
-								//wx_account是iframe的id
+								//wx_advertisement是iframe的id
 								parent.wx_advertisement.loadGird();
 								closeWin();
 							});
@@ -32,27 +32,19 @@ jQuery.validator.addMethod("checkpass", function(value, element) {
 				});
 			},
 			rules : {
-				 hour : {
-					required : true,
-					remote:{ //异步验证是否存在
-						type:"POST",
-						url: rootPath + '/background/advertisement/isExist.html',
-						data:{
-							name:function(){return $("#hour").val();}
-						 }
-					  }
+				 title : {
+					required : true
 				 },
-				minute : {
+				url : {
 					required : true
 				}
 			},
 			messages : {
-				hour : {
-					required : "请输入小时数",
-				    remote:"该小时数已经存在"
+				title : {
+					required : "请输入标题"
 				},
-				minute : {
-					required : "请输入分钟数"
+				url : {
+					required : "请输url"
 				}
 			},
 			errorPlacement : function(error, element) {//自定义提示错误位置
@@ -64,9 +56,6 @@ jQuery.validator.addMethod("checkpass", function(value, element) {
 				$(".l_err").css('display','none');
 			}
 		});
-	});
-	$(function() {
-		$("input:radio[value='${advertisement.state}']").attr('checked','true');
 	});
 	function saveWin() {
 		$("#form").submit();
@@ -95,6 +84,15 @@ jQuery.validator.addMethod("checkpass", function(value, element) {
 					<div class="lanyuan_input">
 					<input id='title'
 						name="title" type="text" class="isNum" value="${advertisement.title}">
+					</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="l_right">url：</td>
+					<td class="l_left">
+					<div class="lanyuan_input">
+					<input id='url'
+						name="url" type="text" class="isNum" value="${advertisement.url}">
 					</div>
 					</td>
 				</tr>
