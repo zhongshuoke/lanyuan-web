@@ -206,7 +206,8 @@ public class WxRecommArticleController extends BaseController{
 	        File file = new File(uploadFile.getRealPath());
 	        System.out.println("上传文件的路径为： "+ uploadFile.getRealPath());
 	        WxRecommendToday wxRecommendToday = wxRecommendTodayService.getById(recommarticleId);
-	        wxRecommendToday.setPicUrl(uploadFile.getRealPath());
+	        //wxRecommendToday.setPicUrl(uploadFile.getRealPath());
+	        wxRecommendToday.setPicUrl(uploadFile.getRelativePath());
 	        wxRecommendTodayService.update(wxRecommendToday);
 	        multipartFile.transferTo(file);
 

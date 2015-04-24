@@ -242,6 +242,11 @@ public class WxCommArticleListController extends BaseCommonController{
 		int param = Integer.valueOf(wxArticleId);
 		int randomint = Common.sumDig(param);
 		Advertisement advertisement = advertisementService.getById(String.valueOf(randomint));
+		if (null==advertisement){
+			advertisement = advertisementService.getById(String.valueOf(1));
+		}
+		//返回接口的图片地址必须是加了前缀的
+		advertisement.setPicurl("http://121.40.69.199:8000/media/"+advertisement.getPicurl());
 		map.put("advertisement", advertisement);
 		map.put("errorCode",1);
 		map.put("message","");

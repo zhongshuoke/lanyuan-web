@@ -192,7 +192,7 @@ public class AdvertisementController extends BaseController{
 	        File file = new File(uploadFile.getRealPath());
 	        System.out.println("上传文件的路径为： "+ uploadFile.getRealPath());
 	        Advertisement advertisement = advertisementService.getById(Id);
-	        advertisement.setPicurl(uploadFile.getRealPath());
+	        advertisement.setPicurl(uploadFile.getRelativePath());
 	        advertisementService.update(advertisement);
 	        multipartFile.transferTo(file);
 
