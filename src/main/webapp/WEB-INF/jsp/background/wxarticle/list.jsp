@@ -41,11 +41,13 @@
 					jsonUrl : '${pageContext.request.contextPath}/background/wxarticle/query.html',
 					checkbox : true
 				});
+		
+		
 		$("#seach").click("click", function() {//绑定查询按扭
 			var searchParams = $("#fenye").serializeJson();
 			grid.setOptions({
 				data : searchParams
-			}); 
+			});
 		});
 		$("#exportExcel").click("click", function() {//绑定查询按扭
 			var f = $('#fenye');

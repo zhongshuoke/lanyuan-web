@@ -31,6 +31,7 @@ import com.lanyuan.service.WxAccTypeService;
 import com.lanyuan.service.WxArticleService;
 import com.lanyuan.service.WxUserOperationService;
 import com.lanyuan.service.WxUserService;
+import com.lanyuan.util.Common;
 import com.lanyuan.util.MD5;
 
 @Controller
@@ -214,7 +215,8 @@ public class WxCommArticleListController extends BaseCommonController{
 	public Map<String, Object> queryArticleContent(String wxArticleId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		WxArticle wa = wxArticleService.getById(wxArticleId);
-		map.put("content",HtmlUtils.htmlEscape(wa.getContent()));
+		//map.put("content",HtmlUtils.htmlEscape(wa.getContent()));
+		map.put("content",wa.getContent());
 		map.put("errorCode",1);
 		map.put("message","");
 		return map;
@@ -236,12 +238,10 @@ public class WxCommArticleListController extends BaseCommonController{
 //			int offset = (int)(Math.random() * advertisementList.size());
 //			advertisement = advertisementList.get(offset);
 //		}
-		
-		Advertisement advertisement = new Advertisement();
-		advertisement.setId(1);
-		advertisement.setTitle("KFC广告");
-		advertisement.setUrl("http://zhidao.baidu.com/daily/view?id=4071");
-		advertisement.setCreateTime(new Date());
+		//APP端请求参数wxArticleId,取该值各位数值之和的个位数以实现随机的概念
+		int param = Integer.valueOf(wxArticleId);
+		int randomint = Common.sumDig(param);
+		Advertisement advertisement = advertisementService.getById(String.valueOf(randomint));
 		map.put("advertisement", advertisement);
 		map.put("errorCode",1);
 		map.put("message","");
