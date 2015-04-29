@@ -1,10 +1,17 @@
 package com.lanyuan.controller;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +61,37 @@ public class WxCommArticleListController extends BaseCommonController{
 	@Inject
 	private WxUserService wxUserService;
 	
-	
+	static {
+		Map<String, String> map = getAllProperties("jdbc");
+		System.out.println(map);
+		Connection conn = null;
+		try {
+			Class.forName(map.get("jdbc.driverClassName"));// 动态加载mysql驱动
+			String username = map.get("jdbc.username");
+			String password = map.get("jdbc.password");
+			String url = map.get("jdbc.url")+"&user="+username+"&password="+password;
+			conn = DriverManager.getConnection(url);
+			Statement stmt = conn.createStatement();
+			String sql = "SELECT id,token FROM wxuser";
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				int userId = rs.getInt(1);
+				String token = rs.getString(2);
+				System.out.println(userId+token);
+				if(StringUtils.isNotBlank(token)) {
+					LOGIN_MAP.put(token, userId);	
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	/**
 	 * 返回文章列表
@@ -851,4 +888,28 @@ public class WxCommArticleListController extends BaseCommonController{
 		return map;
 	}
 
+	/** 
+	 * 获取指定配置文件中所以的数据 
+	 * @param propertyName 
+	 *        调用方式： 
+	 *            1.配置文件放在resource源包下，不用加后缀 
+	 *              PropertiesUtil.getAllMessage("message"); 
+	 *            2.放在包里面的 
+	 *              PropertiesUtil.getAllMessage("com.test.message"); 
+	 * @return 
+	 */  
+	public static Map<String, String> getAllProperties(String propertyName) {  
+	    // 获得资源包  
+	    ResourceBundle rb = ResourceBundle.getBundle(propertyName.trim());  
+	    // 通过资源包拿到所有的key  
+	    Enumeration<String> allKey = rb.getKeys();  
+	    // 遍历key 得到 value  
+	    Map<String, String> map = new HashMap<String, String>();  
+	    while (allKey.hasMoreElements()) {  
+	        String key = allKey.nextElement();  
+	        String value = (String) rb.getString(key);  
+	        map.put(key, value);
+	    }  
+	    return map;  
+	}  
 }
