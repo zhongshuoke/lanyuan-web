@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.util.StringUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -34,6 +35,7 @@ import com.lanyuan.entity.WxUser;
 import com.lanyuan.entity.WxUserOperation;
 import com.lanyuan.service.AdvertisementService;
 import com.lanyuan.service.CityService;
+import com.lanyuan.service.TypePicService;
 import com.lanyuan.service.WxAccTypeService;
 import com.lanyuan.service.WxArticleService;
 import com.lanyuan.service.WxUserOperationService;
@@ -60,6 +62,8 @@ public class WxCommArticleListController extends BaseCommonController{
 	private WxUserOperationService wxUserOperationService;
 	@Inject
 	private WxUserService wxUserService;
+	@Inject
+	private TypePicService typePicService;
 	
 	static {
 		Map<String, String> map = getAllProperties("jdbc");
@@ -185,11 +189,17 @@ public class WxCommArticleListController extends BaseCommonController{
 	public Map<String, Object> getCommArticleList(String class_id, String limit) {
 		LOG.info("class_id="+class_id);
 		LOG.info("limit="+limit);
-		if(StringUtils.isBlank(limit)) {
-			limit = "4";
+		int i_limit=4;
+		if(!StringUtils.isBlank(limit)) {
+			try{
+				i_limit = Integer.valueOf(limit);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 		//List<TypePic> typePicList = new ArrayList<TypePic>();	//写个查询啊 TODO class_id limit
-		List<TypePic> piclist = new ArrayList<TypePic>();
+		//List<TypePic> piclist = new ArrayList<TypePic>();
+		/*
 		for(int index = 0; index<4; index++) {
 			TypePic tp = new TypePic();
 			tp.setId(index+1);
@@ -198,9 +208,21 @@ public class WxCommArticleListController extends BaseCommonController{
 			tp.setTypePicUrl("y:/localpic/typepic/1.jpg");
 			tp.setWxArticTitle("wxArticTitle_"+(index+1));
 			piclist.add(tp);
+		}*/
+		TypePic t = new TypePic();
+		if (class_id != null){
+			t.setWxAccTypeId(Long.parseLong(class_id));
+		}else{
+			t.setWxAccTypeId(0L);
 		}
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("typePicList",piclist);
+		List<TypePic> typePicList = new ArrayList<TypePic>();
+	    typePicList = typePicService.queryAll(t);
+	    Map<String, Object> map = new HashMap<String, Object>();
+	    if(typePicList.size()>i_limit) {
+	    	map.put("typePicList",typePicList.subList(0, i_limit));
+	    }else {
+	    	map.put("typePicList",typePicList);
+	    }
 		map.put("errorCode",1);
 		map.put("message","");
 		return map;

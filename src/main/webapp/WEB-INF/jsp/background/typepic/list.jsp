@@ -19,17 +19,18 @@
 						width : "50px"
 					}, {
 						colkey : "wxAccTypeId",
-						name : "微信公众号类别ID"
+						name : "微信公众号类别ID",
+						width : "150px"
 					}, {
 						colkey : "wxArticleId",
 						name : "微信公众号文章ID",
+						width : "150px"
 					},{
 						colkey : "wxArticTitle",
 						name : "文章标题"
 					} , {
 						colkey : "typePicUrl",
-						name : "图片服务器地址",
-						width : "250px"
+						name : "图片服务器地址"
 					} ],
 					jsonUrl : '${pageContext.request.contextPath}/background/typepic/query.html',
 					checkbox : true
